@@ -1,6 +1,6 @@
 {
   "name": "mozaik-ext-jenkins",
-  "version": "0.0.1",
+  "version": "0.0.4-beta",
   "description": "Mozaik jenkins widgets",
   "repository": {
     "type": "git",

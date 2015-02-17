@@ -2,8 +2,6 @@ var request = require('superagent');
 require('superagent-bluebird-promise');
 var Promise = require('bluebird');
 
-var config = require('./../../../config');
-
 function buildRequest(url) {
     return request.get(url)
         .auth(
@@ -74,5 +72,3 @@ module.exports = {
         ;
     }
 };
-
-require('./../../../lib').hub.registerApi('jenkins', module.exports);
