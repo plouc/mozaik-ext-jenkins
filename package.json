@@ -18,6 +18,9 @@
     "superagent-bluebird-promise": "^0.6.0"
   },
   "main": "./components.js",
+  "scripts": {
+    "prepublish": "gulp lib"
+  },
   "devDependencies": {
     "d3": "^3.5.5",
     "del": "^1.1.1",
