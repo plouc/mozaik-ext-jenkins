@@ -1,18 +1,26 @@
 var request = require('superagent');
-require('superagent-bluebird-promise');
+var config  = require('./config');
 var Promise = require('bluebird');
+var chalk   = require('chalk');
+require('superagent-bluebird-promise');
 
 
-
+/**
+ * @param {Mozaik} mozaik
+ */
 var client = function (mozaik) {
-    function buildRequest(path) {
 
-        var url = config.get('jenkins.baseUrl' + path)
+    mozaik.loadApiConfig(config);
+
+    function buildRequest(path) {
+        var url = config.get('jenkins.baseUrl') + path;
+
+        mozaik.logger.info(chalk.yellow(`[jenkins] fetching from ${ url }`));
 
         return request.get(url)
             .auth(
-                config.api.jenkins.auth.user,
-                config.api.jenkins.auth.password
+                config.get('jenkins.basicAuthUser'),
+                config.get('jenkins.basicAuthPassword')
             )
             .promise()
         ;
@@ -20,7 +28,7 @@ var client = function (mozaik) {
 
     return {
         jobs() {
-            return buildRequest(config.api.jenkins.baseUrl + '/api/json?tree=jobs[name,lastBuild[number,building,timestamp,result]]&pretty=true')
+            return buildRequest('/api/json?tree=jobs[name,lastBuild[number,building,timestamp,result]]&pretty=true')
                 .then(function (res) {
                     return res.body.jobs;
                 })
@@ -28,7 +36,7 @@ var client = function (mozaik) {
         },
 
         job(params) {
-            return buildRequest(config.api.jenkins.baseUrl +  '/job/' + params.job + '/api/json?pretty=true&depth=10&tree=builds[number,duration,result,builtOn,timestamp,id,building]')
+            return buildRequest('/job/' + params.job + '/api/json?pretty=true&depth=10&tree=builds[number,duration,result,builtOn,timestamp,id,building]')
                 .then(function (res) {
                     return res.body.builds;
                 })
@@ -36,7 +44,7 @@ var client = function (mozaik) {
         },
 
         jobBuild(params) {
-            return buildRequest(config.api.jenkins.baseUrl + '/job/' + params.job + '/' + params.buildNumber + '/api/json?pretty=true')
+            return buildRequest('/job/' + params.job + '/' + params.buildNumber + '/api/json?pretty=true')
                 .then(function (res) {
                     return res.body;
                 })
@@ -44,7 +52,7 @@ var client = function (mozaik) {
         },
 
         view(params) {
-            return buildRequest(config.api.jenkins.baseUrl + '/view/' + params.view + '/api/json?pretty=true&depth=1')
+            return buildRequest('/view/' + params.view + '/api/json?pretty=true&depth=1')
                 .then(function (res) {
                     var view = res.body;
                     var jobs = view.jobs;
