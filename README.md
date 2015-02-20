@@ -1,5 +1,7 @@
 # Mozaïk jenkins widgets
 
+[![Travis CI](https://img.shields.io/travis/plouc/mozaik-ext-jenkins.svg?style=flat-square)](https://travis-ci.org/plouc/mozaik-ext-jenkins)
+
 ## Jenkins Client Configuration
 
 In order to use the Mozaïk jenkins widgets, you must configure its **client**.
