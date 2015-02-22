@@ -6,6 +6,10 @@ jest.dontMock('./../components/ViewJobBuildStatus.jsx');
 jest.dontMock('./../components/ViewJobBuildTime.jsx');
 jest.dontMock('./../components/ViewJobHealthReport.jsx');
 
+jest.setMock('mozaik/browser', {
+    Mixin: { ApiConsumer: null }
+});
+
 var React, TestUtils, View, view, ViewJobBuildDuration, ViewJobBuildStatus, ViewJobBuildTime, ViewJobHealthReport;
 
 var sampleView = {

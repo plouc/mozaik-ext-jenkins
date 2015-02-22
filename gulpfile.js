@@ -1,24 +1,29 @@
 var gulp         = require('gulp')
     , del        = require('del')
     , rename     = require('gulp-rename')
-    , toFive     = require("gulp-6to5")
+    , toFive     = require('gulp-6to5')
     , plumber    = require('gulp-plumber')
     , replace    = require('gulp-regex-replace')
     , stripDebug = require('gulp-strip-debug');
 
-gulp.task('lib-clean', function(cb){
-    del('./lib', cb);
-})
+gulp.task('lib-clean', function (done) {
+    del('./lib', done);
+});
 
 gulp.task('lib-compile', [ 'lib-clean' ], function(){
-    return gulp.src(['./src/**/*.js', './src/**/*.jsx'])
+    return gulp.src([
+            './src/**/*.js',
+            './src/**/*.jsx',
+            '!./src/preprocessor.js',
+            '!./src/__tests__/**'
+        ])
         .pipe(plumber())
         .pipe(toFive({}))
         .pipe(replace({regex: "\\.jsx", replace: ''}))
         .pipe(rename({ extname: '.js' }))
-        .pipe(stripDebug())
-        .pipe(gulp.dest('./lib'));
-})
+        //.pipe(stripDebug())
+        .pipe(gulp.dest('./lib'))
+    ;
+});
 
-
-gulp.task('lib', [ 'lib-clean', 'lib-compile'])
+gulp.task('lib', ['lib-clean', 'lib-compile']);
