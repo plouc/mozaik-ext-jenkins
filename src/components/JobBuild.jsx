@@ -1,20 +1,27 @@
-var React  = require('react');
-var moment = require('moment');
+import React, { Component, PropTypes } from 'react';
+import moment                          from 'moment';
 
-var JobBuild = React.createClass({
+
+class JobBuild extends Component {
     render() {
-        var classes = 'list__item list__item--with-status list__item--with-status--' + this.props.build.result.toLowerCase();
+        let { build } = this.props;
+
+        let classes = `list__item list__item--with-status list__item--with-status--${ build.result.toLowerCase() }`;
 
         return (
             <div className={classes}>
-                #{this.props.build.number} {this.props.build.result}&nbsp;
+                #{build.number} {build.result}&nbsp;
                 <time className="list__item__time">
                     <i className="fa fa-clock-o" />&nbsp;
-                    {moment(this.props.build.timestamp, 'x').fromNow()}
+                    {moment(build.timestamp, 'x').fromNow()}
                 </time>
             </div>
         );
     }
-});
+}
 
-module.exports = JobBuild;
+JobBuild.propTypes = {
+    build: PropTypes.object.isRequired
+};
+
+export { JobBuild as default };

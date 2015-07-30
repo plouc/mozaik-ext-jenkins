@@ -1,39 +1,33 @@
-var React            = require('react');
-var Reflux           = require('reflux');
-var _                = require('lodash');
-var JobBuild         = require('./JobBuild.jsx');
-var ApiConsumerMixin = require('mozaik/browser').Mixin.ApiConsumer;
+import React, { Component, PropTypes } from 'react';
+import reactMixin                      from 'react-mixin';
+import { ListenerMixin }               from 'reflux';
+import _                               from 'lodash';
+import JobBuild                        from './JobBuild.jsx';
+import Mozaik                          from 'mozaik/browser';
 
-var JobBuilds = React.createClass({
-    mixins: [
-        Reflux.ListenerMixin,
-        ApiConsumerMixin
-    ],
 
-    propTypes: {
-        job: React.PropTypes.string.isRequired
-    },
-
-    getInitialState() {
-        return {
+class JobBuilds extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
             builds: []
         };
-    },
+    }
 
     getApiRequest() {
         return {
-            id: 'jenkins.job.' + this.props.job,
+            id:     `jenkins.job.${ this.props.job} `,
             params: {
                 job: this.props.job
             }
         };
-    },
+    }
 
     onApiData(builds) {
         this.setState({
             builds: builds
         });
-    },
+    }
 
     render() {
         var buildNodes = _.map(this.state.builds, build => {
@@ -55,6 +49,13 @@ var JobBuilds = React.createClass({
             </div>
         );
     }
-});
+}
 
-module.exports = JobBuilds;
+JobBuilds.propTypes = {
+    job: PropTypes.string.isRequired
+};
+
+reactMixin(JobBuilds.prototype, ListenerMixin);
+reactMixin(JobBuilds.prototype, Mozaik.Mixin.ApiConsumer);
+
+export { JobBuilds as default };
