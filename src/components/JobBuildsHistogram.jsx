@@ -1,151 +1,79 @@
-var React            = require('react');
-var _                = require('lodash');
-var Reflux           = require('reflux');
-var d3               = require('d3');
-var $                = require('jquery');
-var ApiConsumerMixin = require('mozaik/browser').Mixin.ApiConsumer;
+import React, { Component, PropTypes } from 'react';
+import reactMixin                      from 'react-mixin';
+import { ListenerMixin }               from 'reflux';
+import _                               from 'lodash';
+import Mozaik                          from 'mozaik/browser';
+const { BarChart }                     = Mozaik.Component;
 
-var JobBuildsHistogram = React.createClass({
-    mixins: [
-        Reflux.ListenerMixin,
-        ApiConsumerMixin
-    ],
 
-    getInitialState() {
-        return {
-            builds: []
-        };
-    },
+class JobBuildsHistogram extends Component {
+    constructor(props) {
+        super(props);
+        this.state = { builds: [] };
+    }
 
     getApiRequest() {
+        let { job } = this.props;
+
         return {
-            id: 'jenkins.job.' + this.props.job,
-            params: { job: this.props.job }
+            id:     `jenkins.job.${ job }`,
+            params: { job: job }
         };
-    },
+    }
 
     onApiData(builds) {
-        this.setState({
-            builds: builds.slice(0, 20).reverse()
-        });
-    },
+        let { cap } = this.props;
 
-    componentDidMount() {
-        var $this = $(this.getDOMNode());
-
-        this.$body = $this.find('.widget__body');
-        this.svg   = d3.select(this.$body.find('svg').get(0));
-
-        this.backgroundBarsContainer = this.svg.append('g');
-        this.barsContainer           = this.svg.append('g');
-        this.xAxisContainer          = this.svg.append('g');
-
-        this.xAxisContainer.attr('class', 'jenkins__job-build_durations__axis jenkins__job-build_durations__axis--x');
-    },
-
-    drawGraph() {
-        var width  = this.$body.outerWidth();
-        var height = this.$body.outerHeight();
-
-        this.svg.attr({
-            width:  width,
-            height: height
-        });
-
-        var margin = {
-            top:    20,
-            right:  10,
-            bottom: 50,
-            left:   50
-        };
-
-        var utilWidth  = width  - margin.left - margin.right;
-        var utilHeight = height - margin.top  - margin.bottom;
-
-        var x = d3.scale.ordinal()
-            .rangeRoundBands([0, utilWidth], .2);
-
-        var y = d3.scale.linear()
-            .range([utilHeight, 0]);
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .orient('bottom');
-
-        x.domain(this.state.builds.map(d => {
-            return d.number;
-        }));
-        y.domain([0, d3.max(this.state.builds, d => {
-            return d.duration;
-        })]);
-
-        this.backgroundBarsContainer
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-        this.backgroundBarsContainer.selectAll('.jenkins__job-build_durations__bar-bg')
-            .data(this.state.builds)
-        .enter().append('rect')
-            .attr('class', 'jenkins__job-build_durations__bar-bg')
-            .attr('x', d => {
-                return x(d.number);
-            })
-            .attr('width', x.rangeBand())
-            .attr('y', 0)
-            .attr('height', d => {
-                var height = utilHeight - (utilHeight - y(d.duration)) - 3;
-                return height > 0 ? height : 0;
-            });
-
-
-        this.xAxisContainer
-            .attr('transform', 'translate(' + margin.left + ',' + (margin.top + utilHeight) + ')')
-            .call(xAxis)
-        .selectAll('text')
-            .attr('y', 0)
-            .attr('x', 9)
-            .attr('dy', '.35em')
-            .attr('transform', 'rotate(90)')
-            .style('text-anchor', 'start')
-        ;
-
-        this.barsContainer
-            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-        this.barsContainer.selectAll('.jenkins__job-build_durations__bar')
-            .data(this.state.builds)
-        .enter().append('rect')
-            .attr('class', d => {
-                return 'jenkins__job-build_durations__bar jenkins__job-build_durations__bar--' + d.result.toLowerCase();
-            })
-            .attr('x', d => {
-                return x(d.number);
-            })
-            .attr('width', x.rangeBand())
-            .attr('y', d => {
-                return y(d.duration);
-            })
-            .attr('height', d => {
-                return utilHeight - y(d.duration);
-            });
-    },
-
-    componentDidUpdate() {
-        this.drawGraph();
-    },
+        this.setState({ builds: builds.slice(0, cap).reverse() });
+    }
 
     render() {
+        let { job }    = this.props;
+        let { builds } = this.state;
+
+        // converts to format required by BarChart component
+        let data = builds.map(build => {
+            return {
+                x:      build.number,
+                y:      build.duration / 1000 / 60, // converts ms to mn
+                result: build.result ? build.result.toLowerCase() : 'unkown'
+            };
+        });
+
+        let barChartOptions = {
+            mode:            'stacked',
+            xLegend:         'build number',
+            xLegendPosition: 'right',
+            yLegend:         'duration (minutes)',
+            yLegendPosition: 'top',
+            xPadding:        0.3,
+            barClass:        function (d) { return `result--${ d.result }`; }
+        };
+
         return (
             <div>
                 <div className="widget__header">
-                    Jenkins {this.props.job} builds
-                    <i className="fa fa-bug" />
+                    Jenkins <span className="widget__header__subject">{job}</span> builds
+                    <i className="fa fa-bug"/>
                 </div>
                 <div className="widget__body">
-                    <svg />
+                    <BarChart data={[{ data: data }]} options={barChartOptions}/>
                 </div>
             </div>
         );
     }
-});
+}
 
-module.exports = JobBuildsHistogram;
+JobBuildsHistogram.propTypes = {
+    job: PropTypes.string.isRequired,
+    cap: PropTypes.number.isRequired
+};
+
+JobBuildsHistogram.defaultProps = {
+    cap: 50
+};
+
+reactMixin(JobBuildsHistogram.prototype, ListenerMixin);
+reactMixin(JobBuildsHistogram.prototype, Mozaik.Mixin.ApiConsumer);
+
+export { JobBuildsHistogram as default };
