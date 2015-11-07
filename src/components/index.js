@@ -3,5 +3,6 @@ module.exports = {
     JobStatus:          require('./JobStatus.jsx'),
     JobBuilds:          require('./JobBuilds.jsx'),
     JobBuildsHistogram: require('./JobBuildsHistogram.jsx'),
-    View:               require('./View.jsx')
+    View:               require('./View.jsx'),
+    Coverage:           require('./Coverage.jsx')
 };

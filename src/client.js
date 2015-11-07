@@ -27,6 +27,26 @@ const client = function (mozaik) {
     }
 
     return {
+        coverage(params) {
+            return buildRequest(`/job/${params.job}/lastSuccessfulBuild/${params.reporter}/api/json?depth=2`)
+            .then((res) => {
+                    if(params.reporter === "cobertura") {
+                        return {
+                            function: res.body.results.elements[3].ratio,
+                            line: res.body.results.elements[4].ratio,
+                            branch: res.body.results.elements[5].ratio
+                        }
+                    } else if(params.reporter === "jacoco") {
+                        return {
+                            function: res.body.methodCoverage.percentageFloat,
+                            line: res.body.lineCoverage.percentageFloat,
+                            branch: res.body.branchCoverage.percentageFloat
+                        }
+                    }
+
+                })
+        },
+        
         jobs() {
             return buildRequest('/api/json?tree=jobs[name,lastBuild[number,building,timestamp,result]]&pretty=true')
                 .then(res => res.body.jobs)
