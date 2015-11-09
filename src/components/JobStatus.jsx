@@ -41,6 +41,12 @@ var JobStatus = React.createClass({
 
         if (this.state.builds.length > 0) {
             var currentBuild = this.state.builds[0];
+
+            //Show pass/fail status only.
+            if (currentBuild.building === true && this.state.builds.length > 1) {
+                currentBuild = this.state.builds[1];
+            }
+
             if (currentBuild.result === 'SUCCESS') {
                 iconClasses = 'fa fa-check';
             }
