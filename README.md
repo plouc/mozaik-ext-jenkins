@@ -8,11 +8,11 @@ In order to use the Mozaïk jenkins widgets, you must configure its **client**.
 
 ### parameters
 
-key             | env key                         | required | description
-----------------|---------------------------------|----------|-----------------------------------
-`baseUrl`       | JENKINS_API_BASE_URL            | yes      | *jenkins base url*
-`auth.user`     | JENKINS_API_BASIC_AUTH_USER     | yes      | *jenkins auth user*
-`auth.password` | JENKINS_API_BASIC_AUTH_PASSWORD | yes      | *jenkins auth password*
+key                 | env key                         | required | description
+--------------------|---------------------------------|----------|-----------------------------------
+`baseUrl`           | JENKINS_API_BASE_URL            | yes      | *jenkins base url*
+`basicAuthUser`     | JENKINS_API_BASIC_AUTH_USER     | yes      | *jenkins auth user*
+`basicAuthPassword` | JENKINS_API_BASIC_AUTH_PASSWORD | yes      | *jenkins auth password*
 
 ### usage
 
@@ -22,10 +22,8 @@ key             | env key                         | required | description
   api: {
     jenkins: {
       baseUrl: 'https://my-jenkins.ci',
-      auth: {
-        user:     'user',
-        password: 'password'
-      }
+        basicAuthUser:     'user',
+        basicAuthPassword: 'password'
     }
   }
 }
