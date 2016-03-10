@@ -83,13 +83,16 @@ key   | required | description
 
 ![jenkins job status](https://raw.githubusercontent.com/plouc/mozaik-ext-jenkins/master/preview/jenkins.job_status.png)
 
+![jenkins job status bold](https://raw.githubusercontent.com/plouc/mozaik-ext-jenkins/master/preview/jenkins.job_status_bold.png)
+
 > Display job current build status.
 
 ### parameters
 
-key   | required |description
-------|----------|---------------
-`job` | yes      | *jenkins job identifier*
+key      | required |description
+---------|----------|---------------
+`job`    | yes      | *jenkins job identifier*
+`layout` | no       | *widget layout* (none for default or 'bold')
 
 ### usage
 
