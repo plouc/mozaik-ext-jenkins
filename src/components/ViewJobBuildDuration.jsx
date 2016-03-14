@@ -1,17 +1,29 @@
-var React  = require('react');
-var moment = require('moment');
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import moment                          from 'moment';
 require('moment-duration-format');
 
-var ViewJobBuildDuration = React.createClass({
+
+class ViewJobBuildDuration extends Component {
     render() {
         if (!this.props.build) {
             return <td className="table__cell">n/a</td>;
         }
 
-        var formattedDuration = moment.duration(this.props.build.duration, 'ms').format('m [mn] s [s]');
+        const { build } = this.props;
 
-        return <td className="table__cell">{formattedDuration}</td>;
+        return (
+            <td className="table__cell">
+                { moment.duration(build.duration, 'ms').format('m [mn] s [s]')}
+            </td>
+        );
     }
-});
+}
 
-module.exports = ViewJobBuildDuration;
+ViewJobBuildDuration.displayName = 'ViewJobBuildDuration';
+
+ViewJobBuildDuration.propTypes = {
+    build: PropTypes.object
+};
+
+
+export default ViewJobBuildDuration;

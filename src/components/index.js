@@ -1,7 +1,14 @@
-module.exports = {
-    Jobs:               require('./Jobs.jsx'),
-    JobStatus:          require('./JobStatus.jsx'),
-    JobBuilds:          require('./JobBuilds.jsx'),
-    JobBuildsHistogram: require('./JobBuildsHistogram.jsx'),
-    View:               require('./View.jsx')
+import Jobs               from './Jobs.jsx';
+import JobStatus          from './JobStatus.jsx';
+import JobBuilds          from './JobBuilds.jsx';
+import JobBuildsHistogram from './JobBuildsHistogram.jsx';
+import View               from './View.jsx';
+
+
+export default {
+    Jobs,
+    JobStatus,
+    JobBuilds,
+    JobBuildsHistogram,
+    View
 };

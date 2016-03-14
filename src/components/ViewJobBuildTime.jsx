@@ -1,14 +1,28 @@
-var React  = require('react');
-var moment = require('moment');
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import moment                          from 'moment';
 
-var ViewJobBuildTime = React.createClass({
+
+class ViewJobBuildTime extends Component {
     render() {
         if (!this.props.build) {
             return <td className="table__cell">n/a</td>;
         }
 
-        return <td className="table__cell">{moment(this.props.build.timestamp, 'x').fromNow()}</td>;
-    }
-});
+        const { build } = this.props;
 
-module.exports = ViewJobBuildTime;
+        return (
+            <td className="table__cell">
+                {moment(build.timestamp, 'x').fromNow()}
+            </td>
+        );
+    }
+}
+
+ViewJobBuildTime.displayName = 'ViewJobBuildTime';
+
+ViewJobBuildTime.propTypes = {
+    build: PropTypes.object
+};
+
+
+export default ViewJobBuildTime;

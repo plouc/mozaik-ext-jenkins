@@ -1,17 +1,15 @@
-var React   = require('react');
-var ViewJob = require('./ViewJob.jsx');
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import ViewJob                         from './ViewJob.jsx';
 
-var ViewJobs = React.createClass({
+class ViewJobs extends Component {
     render() {
-        var jobNodes = this.props.jobs.map(job => {
-            return <ViewJob job={job} key={job.name} />
-        });
+        const { jobs } = this.props;
 
         return (
             <table className="table">
                 <thead>
                     <tr className="table__row table__row--head">
-                        <th className="table__cell table__cell--head"></th>
+                        <th className="table__cell table__cell--head" />
                         <th className="table__cell table__cell--head">job</th>
                         <th className="table__cell table__cell--head">health</th>
                         <th className="table__cell table__cell--head">last success</th>
@@ -19,10 +17,19 @@ var ViewJobs = React.createClass({
                         <th className="table__cell table__cell--head">last duration</th>
                     </tr>
                 </thead>
-                {jobNodes}
+                {jobs.map(job => (
+                    <ViewJob key={job.name} job={job} />
+                ))}
             </table>
         );
     }
-});
+}
 
-module.exports = ViewJobs;
+ViewJobs.displayName = 'ViewJobs';
+
+ViewJobs.propTypes = {
+    jobs: PropTypes.array.isRequired
+};
+
+
+export default ViewJobs;

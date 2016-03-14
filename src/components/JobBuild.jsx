@@ -1,12 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import moment                          from 'moment';
 
 
 class JobBuild extends Component {
     render() {
-        let { build } = this.props;
+        const { build } = this.props;
 
-        let classes = `list__item list__item--with-status list__item--with-status--${ build.result.toLowerCase() }`;
+        const classes = `list__item list__item--with-status list__item--with-status--${ build.result.toLowerCase() }`;
 
         return (
             <div className={classes}>
@@ -20,8 +20,15 @@ class JobBuild extends Component {
     }
 }
 
+JobBuild.displayName = 'JobBuild';
+
 JobBuild.propTypes = {
-    build: PropTypes.object.isRequired
+    build: PropTypes.shape({
+        number:    PropTypes.number.isRequired,
+        result:    PropTypes.string.isRequired,
+        timestamp: PropTypes.number.isRequired
+    }).isRequired
 };
 
-export { JobBuild as default };
+
+export default JobBuild;

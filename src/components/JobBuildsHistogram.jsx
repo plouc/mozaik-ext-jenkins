@@ -1,7 +1,6 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import reactMixin                      from 'react-mixin';
 import { ListenerMixin }               from 'reflux';
-import _                               from 'lodash';
 import Mozaik                          from 'mozaik/browser';
 const { BarChart }                     = Mozaik.Component;
 
@@ -9,45 +8,44 @@ const { BarChart }                     = Mozaik.Component;
 class JobBuildsHistogram extends Component {
     constructor(props) {
         super(props);
+
         this.state = { builds: [] };
     }
 
     getApiRequest() {
-        let { job } = this.props;
+        const { job } = this.props;
 
         return {
             id:     `jenkins.job.${ job }`,
-            params: { job: job }
+            params: { job }
         };
     }
 
     onApiData(builds) {
-        let { cap } = this.props;
+        const { cap } = this.props;
 
         this.setState({ builds: builds.slice(0, cap).reverse() });
     }
 
     render() {
-        let { job }    = this.props;
-        let { builds } = this.state;
+        const { job }    = this.props;
+        const { builds } = this.state;
 
         // converts to format required by BarChart component
-        let data = builds.map(build => {
-            return {
-                x:      build.number,
-                y:      build.duration / 1000 / 60, // converts ms to mn
-                result: build.result ? build.result.toLowerCase() : 'unkown'
-            };
-        });
+        const data = builds.map(build => ({
+            x:      build.number,
+            y:      build.duration / 1000 / 60, // converts ms to mn
+            result: build.result ? build.result.toLowerCase() : 'unkown'
+        }));
 
-        let barChartOptions = {
+        const barChartOptions = {
             mode:            'stacked',
             xLegend:         'build number',
             xLegendPosition: 'right',
             yLegend:         'duration (minutes)',
             yLegendPosition: 'top',
             xPadding:        0.3,
-            barClass:        function (d) { return `result--${ d.result }`; }
+            barClass:        d => `result--${ d.result }`
         };
 
         return (
@@ -63,6 +61,8 @@ class JobBuildsHistogram extends Component {
         );
     }
 }
+
+JobBuildsHistogram.displayName = 'JobBuildsHistogram';
 
 JobBuildsHistogram.propTypes = {
     job: PropTypes.string.isRequired,

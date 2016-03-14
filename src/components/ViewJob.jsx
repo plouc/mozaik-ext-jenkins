@@ -1,23 +1,32 @@
-var React                = require('react');
-var moment               = require('moment');
-var ViewJobBuildStatus   = require('./ViewJobBuildStatus.jsx');
-var ViewJobHealthReport  = require('./ViewJobHealthReport.jsx');
-var ViewJobBuildTime     = require('./ViewJobBuildTime.jsx');
-var ViewJobBuildDuration = require('./ViewJobBuildDuration.jsx');
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import ViewJobBuildStatus              from './ViewJobBuildStatus.jsx';
+import ViewJobHealthReport             from './ViewJobHealthReport.jsx';
+import ViewJobBuildTime                from './ViewJobBuildTime.jsx';
+import ViewJobBuildDuration            from './ViewJobBuildDuration.jsx';
 
-var ViewJob = React.createClass({
+
+class ViewJob extends Component {
     render() {
+        const { job } = this.props;
+
         return (
             <tr className="table__row">
-                <ViewJobBuildStatus build={this.props.job.lastBuild} />
-                <td className="table__cell">{this.props.job.displayName}</td>
-                <ViewJobHealthReport job={this.props.job} />
-                <ViewJobBuildTime build={this.props.job.lastSuccessfulBuild} />
-                <ViewJobBuildTime build={this.props.job.lastFailedBuild} />
-                <ViewJobBuildDuration build={this.props.job.lastBuild} />
+                <ViewJobBuildStatus build={job.lastBuild} />
+                <td className="table__cell">{job.displayName}</td>
+                <ViewJobHealthReport job={job} />
+                <ViewJobBuildTime build={job.lastSuccessfulBuild} />
+                <ViewJobBuildTime build={job.lastFailedBuild} />
+                <ViewJobBuildDuration build={job.lastBuild} />
             </tr>
         );
     }
-});
+}
 
-module.exports = ViewJob;
+ViewJob.displayName = 'ViewJob';
+
+ViewJob.propTypes = {
+    job: PropTypes.object.isRequired
+};
+
+
+export default ViewJob;

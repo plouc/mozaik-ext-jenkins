@@ -1,133 +1,132 @@
-var React            = require('react');
-var Reflux           = require('reflux');
-var moment           = require('moment');
-var ApiConsumerMixin = require('mozaik/browser').Mixin.ApiConsumer;
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import moment                          from 'moment';
+import reactMixin                      from 'react-mixin';
+import { ListenerMixin }               from 'reflux';
+import Mozaik                          from 'mozaik/browser';
+import JobStatusPreviousBuild          from './JobStatusPreviousBuild.jsx';
 
-var JobStatus = React.createClass({
-    mixins: [
-        Reflux.ListenerMixin,
-        ApiConsumerMixin
-    ],
 
-    propTypes: {
-        job: React.PropTypes.string.isRequired
-    },
+class JobStatus extends Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState() {
-        return {
-            builds: []
-        };
-    },
+        this.state = { builds: [] };
+    }
 
     getApiRequest() {
+        const { job, layout } = this.props;
+
         return {
-            id: 'jenkins.job.' + this.props.job,
-            params: {
-                job: this.props.job,
-                layout: this.props.layout
-            }
+            id:     `jenkins.job.${job}`,
+            params: { job, layout }
         };
-    },
+    }
 
     onApiData(builds) {
-        this.setState({
-            builds: builds
-        });
-    },
+        this.setState({ builds });
+    }
 
     render() {
+        const { job, layout, title } = this.props;
+        const { builds }             = this.state;
 
-        switch(this.props.layout) {
-            case 'bold':
-                var currentNode  = null;
-                var previousNode = null;
+        let currentNode  = null;
+        let previousNode = null;
+        let statusClasses;
+        let iconClasses;
 
-                if (this.state.builds.length > 0) {
-                    var currentBuild = this.state.builds[0];
-                    if (currentBuild.result === 'SUCCESS') {
-                        iconClasses = 'fa fa-check';
-                    }
+        const finalTitle = title || `Jenkins job ${ job }`;
 
-                    var statusClasses = 'widget__body__colored jenkins__view__job__build__colored_status--' + currentBuild.result.toLowerCase();
-
-                    currentNode = (
-                        <div className="jenkins__job-status__current">
-                            Build #{currentBuild.number}<br />
-                            <span className="jenkins__job-status__current__status">
-                                {this.props.title || `${ this.props.job }`}&nbsp;
-                                <i className={iconClasses} />
-                            </span><br/>
-                            <time className="jenkins__job-status__current__time">
-                                <i className="fa fa-clock-o" />&nbsp;
-                                {moment(currentBuild.timestamp, 'x').fromNow()}
-                            </time>
-                        </div>
-                    );
-
+        if (layout === 'bold') {
+            if (builds.length > 0) {
+                const currentBuild = builds[0];
+                if (currentBuild.result === 'SUCCESS') {
+                    iconClasses = 'fa fa-check';
                 }
 
-                return (
-                    <div className={statusClasses}>
-                        {currentNode}
-                    </div>
-                );
-            break;
+                statusClasses = `widget__body__colored jenkins__view__job__build__colored_status--${ currentBuild.result.toLowerCase() }`;
 
-            default:
-                var iconClasses  = 'fa fa-close';
-                var currentNode  = null;
-                var previousNode = null;
-
-                if (this.state.builds.length > 0) {
-                    var currentBuild = this.state.builds[0];
-                    if (currentBuild.result === 'SUCCESS') {
-                        iconClasses = 'fa fa-check';
-                    }
-
-                    var statusClasses = 'jenkins__job-status__current__status jenkins__job-status__current__status--' + currentBuild.result.toLowerCase();
-
-                    currentNode = (
-                        <div className="jenkins__job-status__current">
-                            Build #{currentBuild.number}<br />
-                            <span className={statusClasses}>
-                                {currentBuild.result}&nbsp;
-                                <i className={iconClasses} />
-                            </span><br/>
-                            <time className="jenkins__job-status__current__time">
-                                <i className="fa fa-clock-o" />&nbsp;
-                                {moment(currentBuild.timestamp, 'x').fromNow()}
-                            </time>
-                        </div>
-                    );
-
-                    if (this.state.builds.length > 1) {
-                        var previousBuild = this.state.builds[1];
-                        previousNode = (
-                            <div className="jenkins__job-status__previous">
-                                previous status were&nbsp;
-                                {previousBuild.result}&nbsp;
-                                {moment(previousBuild.timestamp, 'x').fromNow()}
-                            </div>
-                        );
-                    }
-                }
-
-                return (
-                    <div>
-                        <div className="widget__header">
-                            {this.props.title || `Jenkins job ${ this.props.job }`}
-                            <i className="fa fa-bug" />
-                        </div>
-                        <div className="widget__body">
-                            {currentNode}
-                            {previousNode}
-                        </div>
+                currentNode = (
+                    <div className="jenkins__job-status__current">
+                        Build #{currentBuild.number}<br />
+                        <span className="jenkins__job-status__current__status">
+                            {finalTitle}&nbsp;
+                            <i className={iconClasses}/>
+                        </span><br/>
+                        <time className="jenkins__job-status__current__time">
+                            <i className="fa fa-clock-o"/>&nbsp;
+                            {moment(currentBuild.timestamp, 'x').fromNow()}
+                        </time>
                     </div>
                 );
 
+            }
+
+            return (
+                <div className={statusClasses}>
+                    {currentNode}
+                </div>
+            );
         }
 
-    }
-});
+        iconClasses = 'fa fa-close';
 
-module.exports = JobStatus;
+        if (builds.length > 0) {
+            const currentBuild = builds[0];
+            if (currentBuild.result === 'SUCCESS') {
+                iconClasses = 'fa fa-check';
+            }
+
+            statusClasses = `jenkins__job-status__current__status jenkins__job-status__current__status--${ currentBuild.result.toLowerCase() }`;
+
+            currentNode = (
+                <div className="jenkins__job-status__current">
+                    Build #{currentBuild.number}<br />
+                    <span className={statusClasses}>
+                        {currentBuild.result}&nbsp;
+                        <i className={iconClasses} />
+                    </span><br/>
+                    <time className="jenkins__job-status__current__time">
+                        <i className="fa fa-clock-o" />&nbsp;
+                        {moment(currentBuild.timestamp, 'x').fromNow()}
+                    </time>
+                </div>
+            );
+
+            if (builds.length > 1) {
+                previousNode = <JobStatusPreviousBuild build={builds[1]} />;
+            }
+        }
+
+        return (
+            <div>
+                <div className="widget__header">
+                    {finalTitle}
+                    <i className="fa fa-bug" />
+                </div>
+                <div className="widget__body">
+                    {currentNode}
+                    {previousNode}
+                </div>
+            </div>
+        );
+    }
+}
+
+JobStatus.displayName = 'JobStatus';
+
+JobStatus.propTypes = {
+    job:    PropTypes.string.isRequired,
+    layout: PropTypes.string.isRequired,
+    title:  PropTypes.string
+};
+
+JobStatus.defaultProps = {
+    layout: 'default'
+};
+
+reactMixin(JobStatus.prototype, ListenerMixin);
+reactMixin(JobStatus.prototype, Mozaik.Mixin.ApiConsumer);
+
+
+export default JobStatus;

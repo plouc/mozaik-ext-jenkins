@@ -1,41 +1,32 @@
-var React            = require('react');
-var Reflux           = require('reflux');
-var ViewJobs         = require('./ViewJobs.jsx');
-var ApiConsumerMixin = require('mozaik/browser').Mixin.ApiConsumer;
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import reactMixin                      from 'react-mixin';
+import { ListenerMixin }               from 'reflux';
+import Mozaik                          from 'mozaik/browser';
+import ViewJobs                        from './ViewJobs.jsx';
 
-var View = React.createClass({
-    mixins: [
-        Reflux.ListenerMixin,
-        ApiConsumerMixin
-    ],
 
-    propTypes: {
-        view: React.PropTypes.string.isRequired
-    },
+class View extends Component {
+    constructor(props) {
+        super(props);
 
-    getInitialState() {
-        return {
-            view: null
-        };
-    },
+        this.state = { view: null };
+    }
 
     getApiRequest() {
+        const { view } = this.props;
+
         return {
-            id: 'jenkins.view.' + this.props.view,
-            params: {
-                view: this.props.view
-            }
+            id:     `jenkins.view.${view}`,
+            params: { view }
         };
-    },
+    }
 
     onApiData(view) {
-        this.setState({
-            view: view
-        });
-    },
+        this.setState({ view });
+    }
 
     render() {
-        var titleNode = (
+        let titleNode = (
             <span>
                 Jenkins <span className="widget__header__subject">{this.props.view}</span> view
             </span>
@@ -44,9 +35,9 @@ var View = React.createClass({
             titleNode = this.props.title;
         }
 
-        var jobsNode = null;
+        let jobsNode = null;
         if (this.state.view) {
-            jobsNode = <ViewJobs jobs={this.state.view.jobs} />
+            jobsNode = <ViewJobs jobs={this.state.view.jobs} />;
         }
 
         return (
@@ -61,6 +52,17 @@ var View = React.createClass({
             </div>
         );
     }
-});
+}
 
-module.exports = View;
+View.displayName = 'View';
+
+View.propTypes = {
+    view:  PropTypes.string.isRequired,
+    title: PropTypes.string
+};
+
+reactMixin(View.prototype, ListenerMixin);
+reactMixin(View.prototype, Mozaik.Mixin.ApiConsumer);
+
+
+export default View;

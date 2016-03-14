@@ -1,54 +1,51 @@
-var React            = require('react');
-var Reflux           = require('reflux');
-var _                = require('lodash');
-var moment           = require('moment');
-var JobItem          = require('./JobItem.jsx');
-var ApiConsumerMixin = require('mozaik/browser').Mixin.ApiConsumer;
+import React, { Component } from 'react'; // eslint-disable-line no-unused-vars
+import reactMixin           from 'react-mixin';
+import { ListenerMixin }    from 'reflux';
+import Mozaik               from 'mozaik/browser';
+import JobItem              from './JobItem.jsx';
 
-var Jobs = React.createClass({
-    mixins: [
-        Reflux.ListenerMixin,
-        ApiConsumerMixin
-    ],
 
-    getInitialState() {
-        return {
-            jobs: []
-        };
-    },
+class Jobs extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = { jobs: [] };
+    }
 
     getApiRequest() {
-        return {
-            id: 'jenkins.jobs'
-        };
-    },
+        return { id: 'jenkins.jobs' };
+    }
 
     onApiData(jobs) {
-        this.setState({
-            jobs: jobs
-        });
-    },
+        this.setState({ jobs });
+    }
 
     render() {
-        var jobNodes = _.map(this.state.jobs, (job, index) => {
-            return (<JobItem job={job} key={index} />);
-        });
+        const { jobs } = this.state;
 
         return (
             <div>
                 <div className="widget__header">
                     Jenkins jobs
                     <span className="widget__header__count">
-                        {this.state.jobs.length}
+                        {jobs.length}
                     </span>
                     <i className="fa fa-bug" />
                 </div>
                 <div className="widget__body">
-                    {jobNodes}
+                    {jobs.map((job, index) => (
+                        <JobItem key={index} job={job} />
+                    ))}
                 </div>
             </div>
         );
     }
-});
+}
 
-module.exports = Jobs;
+Jobs.displayName = 'Jobs';
+
+reactMixin(Jobs.prototype, ListenerMixin);
+reactMixin(Jobs.prototype, Mozaik.Mixin.ApiConsumer);
+
+
+export default Jobs;
