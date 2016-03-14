@@ -5,15 +5,25 @@ import chalk   from 'chalk';
 require('superagent-bluebird-promise');
 
 
+const viewBuildTypes = [
+    'lastBuild',
+    'lastFailedBuild',
+    'lastSuccessfulBuild'
+];
+
+
 /**
+ * Configures and returns jenkins client.
+ *
  * @param {Mozaik} mozaik
+ * @returns {Object}
  */
-const client = function (mozaik) {
+const client = mozaik => {
 
     mozaik.loadApiConfig(config);
 
     function buildRequest(path) {
-        let url = config.get('jenkins.baseUrl') + path;
+        const url = config.get('jenkins.baseUrl') + path;
 
         mozaik.logger.info(chalk.yellow(`[jenkins] fetching from ${ url }`));
 
@@ -26,7 +36,7 @@ const client = function (mozaik) {
         ;
     }
 
-    return {
+    const apiMethods = {
         jobs() {
             return buildRequest('/api/json?tree=jobs[name,lastBuild[number,building,timestamp,result]]&pretty=true')
                 .then(res => res.body.jobs)
@@ -48,25 +58,19 @@ const client = function (mozaik) {
         view(params) {
             return buildRequest(`/view/${ params.view }/api/json?pretty=true&depth=1`)
                 .then(res => {
-                    let view = res.body;
-                    let jobs = view.jobs;
-
-                    let builds = [];
+                    const view   = res.body;
+                    const builds = [];
 
                     // Fetch builds details
-                    jobs.forEach(function (job) {
-                        [
-                            'lastBuild',
-                            'lastFailedBuild',
-                            'lastSuccessfulBuild'
-                        ].forEach(function (buildType) {
+                    view.jobs.forEach(job => {
+                        viewBuildTypes.forEach(buildType => {
                             if (job[buildType]) {
                                 builds.push(
-                                    module.exports.jobBuild({
+                                    apiMethods.jobBuild({
                                         job:         job.name,
                                         buildNumber: job[buildType].number
                                     })
-                                    .then(function (build) {
+                                    .then(build => {
                                         job[buildType] = build;
                                     })
                                 );
@@ -81,7 +85,9 @@ const client = function (mozaik) {
             ;
         }
     };
+
+    return apiMethods;
 };
 
 
-export { client as default };
+export default client;

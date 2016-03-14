@@ -1,7 +1,7 @@
-var React  = require('react');
-var moment = require('moment');
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 
-var ViewJobBuildStatus = React.createClass({
+
+class ViewJobBuildStatus extends Component {
     render() {
         if (!this.props.build) {
             return (
@@ -13,8 +13,10 @@ var ViewJobBuildStatus = React.createClass({
             );
         }
 
-        var iconClasses   = 'fa fa-';
-        switch (this.props.build.result) {
+        const { build } = this.props;
+
+        let iconClasses = 'fa fa-';
+        switch (build.result) {
             case 'SUCCESS':
                 iconClasses += 'check-circle';
                 break;
@@ -28,8 +30,10 @@ var ViewJobBuildStatus = React.createClass({
                 break;
         }
 
-        var statusClasses = 'jenkins__view__job__build__status ';
-        statusClasses    += 'jenkins__view__job__build__status--' + this.props.build.result.toLowerCase();
+        let statusClasses = 'jenkins__view__job__build__status ';
+        if (build.result) {
+            statusClasses += `jenkins__view__job__build__status--${build.result.toLowerCase()}`;
+        }
 
         return (
             <td className="table__cell">
@@ -39,6 +43,13 @@ var ViewJobBuildStatus = React.createClass({
             </td>
         );
     }
-});
+}
 
-module.exports = ViewJobBuildStatus;
+ViewJobBuildStatus.displayName = 'ViewJobBuildStatus';
+
+ViewJobBuildStatus.propTypes = {
+    build: PropTypes.object
+};
+
+
+export default ViewJobBuildStatus;

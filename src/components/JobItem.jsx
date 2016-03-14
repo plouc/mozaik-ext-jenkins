@@ -1,37 +1,49 @@
-var React       = require('react');
-var _           = require('lodash');
-var request     = require('superagent');
-var moment      = require('moment');
+import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
+import moment                          from 'moment';
 
-var JobItem = React.createClass({
+
+class JobItem extends Component {
     render() {
-        var buildNumber = <span>—</span>;
-        var statusIcon  = <i className="fa fa-question-circle" />;
-        var fromNow     = <time>—</time>;
+        const { job } = this.props;
 
-        if (this.props.job.lastBuild) {
-            buildNumber = <span className="jenkins__job__number">#{this.props.job.lastBuild.number}</span>;
+        let buildNumber = <span>—</span>;
+        let statusIcon  = <i className="fa fa-question-circle" />;  // eslint-disable-line no-unused-vars
+        let fromNow     = <time>—</time>;
 
-            if (this.props.job.lastBuild.result === 'SUCCESS') {
+        if (job.lastBuild) {
+            buildNumber = (
+                <span className="jenkins__job__number">
+                    #{job.lastBuild.number}
+                </span>
+            );
+
+            if (job.lastBuild.result === 'SUCCESS') {
                 statusIcon = <i className="fa fa-check-circle" />;
-            } else if (this.props.job.lastBuild.result === 'FAILURE') {
+            } else if (job.lastBuild.result === 'FAILURE') {
                 statusIcon = <i className="fa fa-times-circle" />;
-            } else if (this.props.job.lastBuild.result === 'ABORTED') {
+            } else if (job.lastBuild.result === 'ABORTED') {
                 statusIcon = <i className="fa fa-minus-circle" />;
             }
 
-            fromNow = <time>{moment(this.props.job.lastBuild.timestamp).fromNow()}</time>;
+            fromNow = <time>{moment(job.lastBuild.timestamp).fromNow()}</time>;
         }
 
-        var classes = 'jenkins__job jenkins__job--' + (this.props.job.lastBuild ? this.props.job.lastBuild.result.toLowerCase() : 'unknown');
+        const classes = `jenkins__job jenkins__job--${job.lastBuild ? job.lastBuild.result.toLowerCase() : 'unknown'}`;
 
         return (
             <div className={classes}>
-                {this.props.job.name} {buildNumber}<br />
+                {job.name} {buildNumber}<br />
                 {fromNow}
             </div>
-        )
+        );
     }
-});
+}
 
-module.exports = JobItem;
+JobItem.displayName = 'JobItem';
+
+JobItem.propTypes = {
+    job: PropTypes.object.isRequired
+};
+
+
+export default JobItem;
