@@ -6,15 +6,25 @@
     "type": "git",
     "url": "git://github.com/plouc/mozaik-ext-jenkins"
   },
+  "bugs": {
+    "url": "https://github.com/plouc/mozaik-ext-jenkins/issues"
+  },
+  "homepage": "https://github.com/plouc/mozaik-ext-jenkins#readme",
   "license": "MIT",
   "author": {
     "name": "Raphaël Benitte",
     "url": "https://github.com/plouc"
   },
+  "keywords": [
+    "jenkins",
+    "mozaik",
+    "widget",
+    "extension",
+    "dashboard"
+  ],
   "engines": {
     "node": "0.12.x"
   },
-  "homepage": "https://github.com/plouc/mozaik-ext-jenkins",
   "main": "./src/components/index.js",
   "dependencies": {
     "babelify": "^6.1.3",
