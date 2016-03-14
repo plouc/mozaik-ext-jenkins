@@ -23,7 +23,8 @@ var JobStatus = React.createClass({
         return {
             id: 'jenkins.job.' + this.props.job,
             params: {
-                job: this.props.job
+                job: this.props.job,
+                layout: this.props.layout
             }
         };
     },
@@ -35,56 +36,97 @@ var JobStatus = React.createClass({
     },
 
     render() {
-        var iconClasses  = 'fa fa-close';
-        var currentNode  = null;
-        var previousNode = null;
 
-        if (this.state.builds.length > 0) {
-            var currentBuild = this.state.builds[0];
-            if (currentBuild.result === 'SUCCESS') {
-                iconClasses = 'fa fa-check';
-            }
+        switch(this.props.layout) {
+            case 'bold':
+                var currentNode  = null;
+                var previousNode = null;
 
-            var statusClasses = 'jenkins__job-status__current__status jenkins__job-status__current__status--' + currentBuild.result.toLowerCase();
+                if (this.state.builds.length > 0) {
+                    var currentBuild = this.state.builds[0];
+                    if (currentBuild.result === 'SUCCESS') {
+                        iconClasses = 'fa fa-check';
+                    }
 
-            currentNode = (
-                <div className="jenkins__job-status__current">
-                    Build #{currentBuild.number}<br />
-                    <span className={statusClasses}>
-                        {currentBuild.result}&nbsp;
-                        <i className={iconClasses} />
-                    </span><br/>
-                    <time className="jenkins__job-status__current__time">
-                        <i className="fa fa-clock-o" />&nbsp;
-                        {moment(currentBuild.timestamp, 'x').fromNow()}
-                    </time>
-                </div>
-            );
+                    var statusClasses = 'widget__body__colored jenkins__view__job__build__colored_status--' + currentBuild.result.toLowerCase();
 
-            if (this.state.builds.length > 1) {
-                var previousBuild = this.state.builds[1];
-                previousNode = (
-                    <div className="jenkins__job-status__previous">
-                        previous status were&nbsp;
-                        {previousBuild.result}&nbsp;
-                        {moment(previousBuild.timestamp, 'x').fromNow()}
+                    currentNode = (
+                        <div className="jenkins__job-status__current">
+                            Build #{currentBuild.number}<br />
+                            <span className="jenkins__job-status__current__status">
+                                {this.props.title || `${ this.props.job }`}&nbsp;
+                                <i className={iconClasses} />
+                            </span><br/>
+                            <time className="jenkins__job-status__current__time">
+                                <i className="fa fa-clock-o" />&nbsp;
+                                {moment(currentBuild.timestamp, 'x').fromNow()}
+                            </time>
+                        </div>
+                    );
+
+                }
+
+                return (
+                    <div className={statusClasses}>
+                        {currentNode}
                     </div>
                 );
-            }
+            break;
+
+            default:
+                var iconClasses  = 'fa fa-close';
+                var currentNode  = null;
+                var previousNode = null;
+
+                if (this.state.builds.length > 0) {
+                    var currentBuild = this.state.builds[0];
+                    if (currentBuild.result === 'SUCCESS') {
+                        iconClasses = 'fa fa-check';
+                    }
+
+                    var statusClasses = 'jenkins__job-status__current__status jenkins__job-status__current__status--' + currentBuild.result.toLowerCase();
+
+                    currentNode = (
+                        <div className="jenkins__job-status__current">
+                            Build #{currentBuild.number}<br />
+                            <span className={statusClasses}>
+                                {currentBuild.result}&nbsp;
+                                <i className={iconClasses} />
+                            </span><br/>
+                            <time className="jenkins__job-status__current__time">
+                                <i className="fa fa-clock-o" />&nbsp;
+                                {moment(currentBuild.timestamp, 'x').fromNow()}
+                            </time>
+                        </div>
+                    );
+
+                    if (this.state.builds.length > 1) {
+                        var previousBuild = this.state.builds[1];
+                        previousNode = (
+                            <div className="jenkins__job-status__previous">
+                                previous status were&nbsp;
+                                {previousBuild.result}&nbsp;
+                                {moment(previousBuild.timestamp, 'x').fromNow()}
+                            </div>
+                        );
+                    }
+                }
+
+                return (
+                    <div>
+                        <div className="widget__header">
+                            {this.props.title || `Jenkins job ${ this.props.job }`}
+                            <i className="fa fa-bug" />
+                        </div>
+                        <div className="widget__body">
+                            {currentNode}
+                            {previousNode}
+                        </div>
+                    </div>
+                );
+
         }
 
-        return (
-            <div>
-                <div className="widget__header">
-                    {this.props.title || `Jenkins job ${ this.props.job }`}
-                    <i className="fa fa-bug" />
-                </div>
-                <div className="widget__body">
-                    {currentNode}
-                    {previousNode}
-                </div>
-            </div>
-        );
     }
 });
 
