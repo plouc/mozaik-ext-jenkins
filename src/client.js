@@ -33,6 +33,10 @@ const client = mozaik => {
                 config.get('jenkins.basicAuthPassword')
             )
             .promise()
+            .catch(error => {
+                mozaik.logger.error(chalk.red(`[jenkins] ${ error.error }`));
+                throw error;
+            })
         ;
     }
 
