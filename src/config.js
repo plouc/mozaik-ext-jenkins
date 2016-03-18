@@ -19,6 +19,12 @@ const config = convict({
             default: null,
             format:  String,
             env:     'JENKINS_API_BASIC_AUTH_PASSWORD'
+        },
+        customCa: {
+            doc:     '(Optional) CA file to use for tls authentication',
+            default: '',
+            format:  String,
+            env:     'JENKINS_API_CUSTOM_CA'
         }
     }
 });

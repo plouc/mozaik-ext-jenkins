@@ -2,6 +2,7 @@ import request from 'superagent';
 import config  from './config';
 import Promise from 'bluebird';
 import chalk   from 'chalk';
+import fs      from 'fs';
 require('superagent-bluebird-promise');
 
 
@@ -21,13 +22,29 @@ const viewBuildTypes = [
 const client = mozaik => {
 
     mozaik.loadApiConfig(config);
+    const caFilePath = config.get('jenkins.customCa');
+    let certificate;
+
+    if (caFilePath.length > 0) {
+        try {
+            certificate = fs.readFileSync(caFilePath);
+        } catch(error) {
+            mozaik.logger.error(chalk.red(`[jenkins] an error occurred while trying to read custom certificate (${ error })`));
+            throw error;
+        }
+    }
 
     function buildRequest(path) {
         const url = config.get('jenkins.baseUrl') + path;
+        let req = request.get(url);
+
+        if (certificate) {
+            req = req.ca(certificate);
+        }
 
         mozaik.logger.info(chalk.yellow(`[jenkins] fetching from ${ url }`));
 
-        return request.get(url)
+        return req
             .auth(
                 config.get('jenkins.basicAuthUser'),
                 config.get('jenkins.basicAuthPassword')
