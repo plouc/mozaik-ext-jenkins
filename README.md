@@ -13,6 +13,7 @@ key                 | env key                         | required | description
 `baseUrl`           | JENKINS_API_BASE_URL            | yes      | *jenkins base url*
 `basicAuthUser`     | JENKINS_API_BASIC_AUTH_USER     | yes      | *jenkins auth user*
 `basicAuthPassword` | JENKINS_API_BASIC_AUTH_PASSWORD | yes      | *jenkins auth password*
+`customCa`          | JENKINS_API_CUSTOM_CA           | no       | *jenkins certificate*
 
 ### usage
 

@@ -23,18 +23,18 @@ const client = mozaik => {
 
     mozaik.loadApiConfig(config);
     const caFilePath = config.get('jenkins.customCa');
-    let _certificate;
+    let certificate;
 
     if (caFilePath.length > 0) {
-        _certificate = fs.readFileSync(caFilePath)
+        certificate = fs.readFileSync(caFilePath);
     }
 
     function buildRequest(path) {
         const url = config.get('jenkins.baseUrl') + path;
         let req = request.get(url);
 
-        if (_certificate) {
-            req = req.ca(_certificate)
+        if (certificate) {
+            req = req.ca(certificate);
         }
 
         mozaik.logger.info(chalk.yellow(`[jenkins] fetching from ${ url }`));
