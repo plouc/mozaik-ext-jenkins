@@ -30,6 +30,7 @@ const client = mozaik => {
             certificate = fs.readFileSync(caFilePath);
         } catch(error) {
             mozaik.logger.error(chalk.red(`[jenkins] an error occurred while trying to read custom certificate (${ error })`));
+            throw error;
         }
     }
 
