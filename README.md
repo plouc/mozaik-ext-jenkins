@@ -43,9 +43,10 @@ key                 | env key                         | required | description  
 
 ### parameters
 
-key   | required | description
-------|----------|---------------
-`job` | yes      | *jenkins job identifier*
+key     | required | description
+--------|----------|---------------
+`job`   | yes      | *jenkins job identifier*
+`title` | no       | *Widget title (`Jenkins job builds` if none provided)*
 
 ### usage
 
