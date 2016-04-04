@@ -13,7 +13,7 @@ class ViewJobBuildDuration extends Component {
 
         return (
             <td className="table__cell">
-                { moment.duration(build.duration, 'ms').format('m [mn] s [s]')}
+                {moment.duration(build.duration, 'ms').format('m [mn] s [s]')}
             </td>
         );
     }
