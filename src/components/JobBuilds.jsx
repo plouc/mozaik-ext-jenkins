@@ -16,7 +16,7 @@ class JobBuilds extends Component {
         const { job } = this.props;
 
         return {
-            id:     `jenkins.job.${job}`,
+            id:     `jenkins.job.${job} `,
             params: { job }
         };
     }

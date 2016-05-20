@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import moment                          from 'moment';
-
+import { getBuildStatus }              from './util';
 
 class JobStatusPreviousBuild extends Component {
     render() {
@@ -9,7 +9,7 @@ class JobStatusPreviousBuild extends Component {
         return (
             <div className="jenkins__job-status__previous">
                 previous status (#{build.number}) were&nbsp;
-                {build.result}&nbsp;
+                {getBuildStatus(build)}&nbsp;
                 {moment(build.timestamp, 'x').fromNow()}
             </div>
         );

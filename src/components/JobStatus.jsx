@@ -3,6 +3,7 @@ import moment                          from 'moment';
 import reactMixin                      from 'react-mixin';
 import { ListenerMixin }               from 'reflux';
 import Mozaik                          from 'mozaik/browser';
+import { getBuildStatus }              from './util';
 import JobStatusPreviousBuild          from './JobStatusPreviousBuild.jsx';
 
 
@@ -44,7 +45,7 @@ class JobStatus extends Component {
                     iconClasses = 'fa fa-check';
                 }
 
-                statusClasses = `widget__body__colored jenkins__view__job__build__colored_status--${ currentBuild.result.toLowerCase() }`;
+                statusClasses = `widget__body__colored jenkins__view__job__build__colored_status--${ getBuildStatus(currentBuild).toLowerCase() }`;
 
                 currentNode = (
                     <div className="jenkins__job-status__current">
@@ -77,7 +78,7 @@ class JobStatus extends Component {
                 iconClasses = 'fa fa-check';
             }
 
-            statusClasses = `jenkins__job-status__current__status jenkins__job-status__current__status--${ currentBuild.result.toLowerCase() }`;
+            statusClasses = `jenkins__job-status__current__status jenkins__job-status__current__status--${ getBuildStatus(currentBuild).toLowerCase() }`;
 
             currentNode = (
                 <div className="jenkins__job-status__current">
