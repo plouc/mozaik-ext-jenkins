@@ -35,7 +35,7 @@ class JobBuildsHistogram extends Component {
         const data = builds.map(build => ({
             x:      build.number,
             y:      build.duration / 1000 / 60, // converts ms to mn
-            result: build.result ? build.result.toLowerCase() : 'unkown'
+            result: build.result ? build.result.toLowerCase() : 'unknown'
         }));
 
         const barChartOptions = {
