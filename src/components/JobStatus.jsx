@@ -50,10 +50,10 @@ class JobStatus extends Component {
                 currentNode = (
                     <div className="jenkins__job-status__current">
                         Build #{currentBuild.number}<br />
-                        <span className="jenkins__job-status__current__status">
+                        <a className="jenkins__job-status__current__status" href={currentBuild.url}>
                             {finalTitle}&nbsp;
                             <i className={iconClasses}/>
-                        </span><br/>
+                        </a><br/>
                         <time className="jenkins__job-status__current__time">
                             <i className="fa fa-clock-o"/>&nbsp;
                             {moment(currentBuild.timestamp, 'x').fromNow()}
@@ -83,10 +83,10 @@ class JobStatus extends Component {
             currentNode = (
                 <div className="jenkins__job-status__current">
                     Build #{currentBuild.number}<br />
-                    <span className={statusClasses}>
+                    <a className={statusClasses} href={currentBuild.url}>
                         {currentBuild.result}&nbsp;
                         <i className={iconClasses} />
-                    </span><br/>
+                    </a><br/>
                     <time className="jenkins__job-status__current__time">
                         <i className="fa fa-clock-o" />&nbsp;
                         {moment(currentBuild.timestamp, 'x').fromNow()}
