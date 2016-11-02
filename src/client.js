@@ -65,7 +65,7 @@ const client = mozaik => {
         },
 
         job(params) {
-            return buildRequest(`/job/${ params.job }/api/json?pretty=true&depth=10&tree=builds[number,duration,result,builtOn,timestamp,id,building]`)
+            return buildRequest(`/job/${ params.job }/api/json?pretty=true&depth=10&tree=builds[number,duration,result,builtOn,timestamp,id,building,url]`)
                 .then(res => res.body.builds)
             ;
         },
