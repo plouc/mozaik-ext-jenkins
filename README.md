@@ -109,6 +109,27 @@ key      | required |description                                   | notes
 ```
 
 
+## Jenkins Job Status With Progress
+
+![jenkins job status](https://raw.githubusercontent.com/przemuh/mozaik-ext-jenkins/progress-job-status/preview/jenkins.job_status_progress.png)
+
+> Display job current build status with progress % - based on Job Status - bold.
+
+### parameters
+
+key      | required |description                                   | notes
+---------|----------|----------------------------------------------|-----------------------------------------
+`job`    | yes      | *jenkins job identifier*                     |
+
+### usage
+
+```javascript
+{
+  type: 'jenkins.job_status_progress', job: 'my-job',
+  columns: 1, rows: 1, x: 0, y: 0
+}
+```
+
 
 ## Jenkins View
 
